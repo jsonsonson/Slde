@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<!--fallback--->
+<script>
+  window.initSdk = function() {};
+  window.showInterstitial = function() {};
+  window.showRewarded = function() {};
+  
+  window.admonitor = {
+    init: function() {},
+    showInterstitial: function() {},
+    showRewarded: function() {}
+  };
+  
+  window.CrazyGames = {
+    SDK: {
+      init: function() {},
+      ad: { requestAd: function() {} }
+    }
+  };
+  
+  window.PokiSDK = {
+    init: function() { return Promise.resolve(); },
+    gameLoadingStart: function() {},
+    gameLoadingFinished: function() {}
+  };
+</script>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Kick Lucky Blocks Online</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark">
+    <div id="unity-container" class="unity-desktop">
+        <canvas id="unity-canvas"></canvas>
+    </div>
+    <div id="loading-cover" style="display:none;">
+        <div id="unity-loading-bar">
+            <div id="unity-logo"><img src="https://i.ibb.co/1t9rNL5r/Picsart-25-08-12-15-47-39-355.png"></div>
+            <div id="unity-progress-bar-empty" style="display: none;">
+                <div id="unity-progress-bar-full"></div>
+            </div>
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <script>
+    // bloqueia redirecionamentos para sites externos
+window.open = function(url, target, features) {
+    console.log("Redirecionamento bloqueado para:", url);
+    return null; // Retorna null e impede a abertura da nova aba
+};
+    </script>
+    <script>
+      const hideFullScreenButton = "";
+      const buildUrl = "Build";
+      const loaderUrl = buildUrl + "/Unity.loader.js";
+      const config = {
+        dataUrl: buildUrl + "/Unity.data",
+        frameworkUrl: buildUrl + "/Unity.framework.js",
+        codeUrl: buildUrl + "/Unity.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Cursora Labs OÜ",
+        productName: "Kick Lucky Blocks Online",
+        devicePixelRatio: 1.5,
+        productVersion: "15",
+        webglContextAttributes: {
+          preserveDrawingBuffer: true,
+          powerPreference: "high-performance",
+        },
+      };
+
+      const container = document.querySelector("#unity-container");
+      const canvas = document.querySelector("#unity-canvas");
+      const loadingCover = document.querySelector("#loading-cover");
+      const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+      const progressBarFull = document.querySelector("#unity-progress-bar-full");
+      const spinner = document.querySelector('.spinner');
+
+      const canFullscreen = (function() {
+        for (const key of [
+            'exitFullscreen',
+            'webkitExitFullscreen',
+            'webkitCancelFullScreen',
+            'mozCancelFullScreen',
+            'msExitFullscreen',
+          ]) {
+          if (key in document) {
+            return true;
+          }
+        }
+        return false;
+        }());
+
+      loadingCover.style.display = "";
+
+      // Explicitly setting the background image using JavaScript
+      document.body.style.backgroundImage = "url('https://cdn.jsdelivr.net/gh/papamamia/qarama@main/backgrouod.png')";
+      document.body.style.backgroundPosition = "center";
+      document.body.style.backgroundRepeat = "no-repeat";
+      document.body.style.backgroundSize = "cover";
+
+      var myGameInstance = null;
+
+      const script = document.createElement("script");
+      script.src = loaderUrl;
+
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          spinner.style.display = "none";
+          progressBarEmpty.style.display = "";
+          progressBarFull.style.width = `${100 * progress}%`;
+        }).then((unityInstance) => {
+          myGameInstance = unityInstance;
+          loadingCover.style.display = "none";
+          // Now that Unity is fully loaded, it's safe to interact with it
+          //checkDevice(); // Ensure this function is called here
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+
+      document.body.appendChild(script);
+    </script>
+
+</script>
+<style>
+    html, body { margin: 0 !important; padding: 0 !important; width: 100% !important; height: 100% !important; overflow: hidden !important; background: #000 !important; }
+    canvas, #unity-canvas { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; z-index: 5 !important; }
+    .modo-solo canvas, .modo-solo #unity-canvas { position: fixed !important; top: 0 !important; left: 0 !important; width: 200% !important; height: 102% !important; transform: scaleX(1.0) translateY(-1%) !important; transform-origin: left top !important; object-fit: cover !important; z-index: 10 !important; }
+    @media (orientation: portrait) { .modo-solo canvas, .modo-solo #unity-canvas { width: 200% !important; height: 102% !important; transform: rotate(90deg) translate(0, -100%) translateY(-1%) !important; } }
+    
+    /* PELÍCULA DE PROTEÇÃO ULTRA INVISÍVEL - IMPEDE CLIQUES DURANTE CARREGAMENTO ADICIONAL */
+    #pelicula-bloqueio-total { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: transparent; z-index: 99999999 !important; pointer-events: auto !important; }
+
+    #switch-tela { position: fixed; top: 12px; left: 15px; background: #ff3366; color: #fff; padding: 8px 15px; font-family: sans-serif; font-size: 12px; font-weight: bold; border: 2px solid #fff; border-radius: 20px; cursor: pointer; z-index: 999999 !important; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: none; }
+    #tutorial-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 18, 18, 0.88); z-index: 999990; display: none; }
+    #tutorial-overlay.permitir-furo { pointer-events: none !important; }
+    .bloqueador-borda { position: fixed; background: rgba(18, 18, 18, 0.88); z-index: 999991; display: none; pointer-events: auto; }
+    #seta-tutorial { position: fixed; font-size: 48px; color: #00ffcc; text-shadow: 0 0 8px #000, 0 0 15px #00ffcc; z-index: 999996; display: none; pointer-events: none; }
+</style>
+
+<div id="pelicula-bloqueio-total"></div>
+<button id="switch-tela">MODO: TELA DIVIDIDA (NORMAL)</button>
+<div id="tutorial-overlay"></div>
+<div id="seta-tutorial">➔</div>
+
+<div id="block-top" class="bloqueador-borda"></div>
+<div id="block-bottom" class="bloqueador-borda"></div>
+<div id="block-left" class="bloqueador-borda"></div>
+<div id="block-right" class="bloqueador-borda"></div>
+
+<script>
+    const bSwitch = document.getElementById('switch-tela');
+    const overlay = document.getElementById('tutorial-overlay');
+    const seta = document.getElementById('seta-tutorial');
+    const pBloqueio = document.getElementById('pelicula-bloqueio-total');
+    const bTop = document.getElementById('block-top'); const bBottom = document.getElementById('block-bottom');
+    const bLeft = document.getElementById('block-left'); const bRight = document.getElementById('block-right');
+
+    let modoSoloAtivo = false; let passoTutorial = 0; let tutorialIniciado = false;
+    let px = 0.51, py = 0.65, pw = 0.22, ph = 0.15;
+
+    function alternarModo() {
+        if (!modoSoloAtivo) {
+            document.body.classList.add('modo-solo');
+            bSwitch.innerHTML = "MODO: SOLO (TELA CHEIA)"; bSwitch.style.background = "#00ffcc"; bSwitch.style.color = "#000";
+            modoSoloAtivo = true;
+        } else {
+            document.body.classList.remove('modo-solo');
+            bSwitch.innerHTML = "MODO: TELA DIVIDIDA (NORMAL)"; bSwitch.style.background = "#ff3366"; bSwitch.style.color = "#fff";
+            modoSoloAtivo = false;
+        }
+    }
+    
+ bSwitch.addEventListener('pointerdown', (e) => { 
+ e.preventDefault(); alternarModo(); 
+ if(passoTutorial === 2) finalizarTutorial();
+ });
+
+ function reposicionarElementos() {
+ const canvas = document.querySelector('canvas') || document.getElementById('unity-canvas');
+ if (!canvas || passoTutorial === 0) return;
+
+ const rect = canvas.getBoundingClientRect();
+ let w = rect.width; let h = rect.height; let l = rect.left; let t = rect.top;
+ const aspectBox = w / h; const targetAspect = 16 / 9;
+
+ if (aspectBox > targetAspect) {
+ const realWidth = h * targetAspect; l = l + (w - realWidth) / 2; w = realWidth;
+ } else {
+ const realHeight = w / targetAspect; t = t + (h - realHeight) / 2; h = realHeight;
+ }
+
+ if (passoTutorial === 1) {
+ const fLeft = l + (w * px); const fTop = t + (h * py); const fWidth = w * pw; const fHeight = h * ph;
+
+ overlay.style.clipPath = `polygon(0% 0%, 0% 100%, ${fLeft}px 100%, ${fLeft}px ${fTop}px, ${fLeft + fWidth}px ${fTop}px, ${fLeft + fWidth}px ${fTop + fHeight}px, ${fLeft}px ${fTop + fHeight}px, ${fLeft}px 100%, 100% 100%, 100% 0%)`;
+ bTop.style.cssText = `display:block; left:0; top:0; width:100vw; height:${fTop}px;`;
+ bBottom.style.cssText = `display:block; left:0; top:${fTop + fHeight}px; width:100vw; height:${window.innerHeight - (fTop + fHeight)}px;`;
+ bLeft.style.cssText = `display:block; left:0; top:${fTop}px; width:${fLeft}px; height:${fHeight}px;`;
+ bRight.style.cssText = `display:block; left:${fLeft + fWidth}px; top:${fTop}px; width:${window.innerWidth - (fLeft + fWidth)}px; height:${fHeight}px;`;
+
+ seta.style.display = 'block'; seta.style.left = `${fLeft + (fWidth / 2)}px`; seta.style.top = `${fTop - 50}px`; seta.style.transform = 'translate(-50%, 0) rotate(90deg)';
+ } 
+ 
+ if (passoTutorial === 2) {
+ const rAjuste = bSwitch.getBoundingClientRect();
+ overlay.style.clipPath = `polygon(0% 0%, 0% 100%, ${rAjuste.left}px 100%, ${rAjuste.left}px ${rAjuste.top}px, ${rAjuste.right}px ${rAjuste.top}px, ${rAjuste.right}px ${rAjuste.bottom}px, ${rAjuste.left}px ${rAjuste.bottom}px, ${rAjuste.left}px 100%, 100% 100%, 100% 0%)`;
+ bTop.style.cssText = `display:block; left:0; top:0; width:100vw; height:${rAjuste.top}px;`;
+ bBottom.style.cssText = `display:block; left:0; top:${rAjuste.bottom}px; width:100vw; height:${window.innerHeight - rAjuste.bottom}px;`;
+ bLeft.style.cssText = `display:block; left:0; top:${rAjuste.top}px; width:${rAjuste.left}px; height:${rAjuste.height}px;`;
+ bRight.style.cssText = `display:block; left:${rAjuste.right}px; top:${rAjuste.top}px; width:${window.innerWidth - rAjuste.right}px; height:${rAjuste.height}px;`;
+ seta.style.display = 'block'; seta.style.left = `${rAjuste.left + (rAjuste.width / 2)}px`; seta.style.top = `${rAjuste.bottom + 15}px`; seta.style.transform = 'translate(-50%, 0) rotate(-90deg)';
+ }
+ }
+
+ function monitorarTelaDeLoading() {
+ // Monitora especificamente o fechamento da div de loading real do seu jogo (#loading-cover)
+ const loadingCoverReal = document.getElementById('loading-cover');
+
+ if (loadingCoverReal) {
+ const observador = new MutationObserver((mutations) => {
+ // Se o estilo mudou para display: none, significa que a Unity terminou totalmente de carregar
+ if (loadingCoverReal.style.display === 'none') {
+ observador.disconnect();
+ setTimeout(liberarEIniciarTutorial, 2500); // Aguarda 2.5s para renderizar o primeiro quadro do jogo e solta a seta
+ }
+ });
+ observador.observe(loadingCoverReal, { attributes: true, attributeFilter: ['style'] });
+ } else {
+ // Failsafe estrutural: caso a div mude de nome por alguma razão, inicia por tempo seguro
+ setTimeout(liberarEIniciarTutorial, 6000);
+ }
+ }
+
+ function liberarEIniciarTutorial() {
+ if (tutorialIniciado) return;
+ tutorialIniciado = true;
+ 
+ if (pBloqueio) { pBloqueio.remove(); }
+ passoTutorial = 1;
+ overlay.style.display = 'block'; 
+ overlay.classList.add('permitir-furo');
+ reposicionarElementos();
+ }
+
+ window.addEventListener('load', monitorarTelaDeLoading);
+ window.addEventListener('resize', reposicionarElementos);
+
+ window.addEventListener('pointerdown', (e) => {
+ if (passoTutorial === 1) {
+ const canvas = document.querySelector('canvas') || document.getElementById('unity-canvas'); if (!canvas) return;
+ const rect = canvas.getBoundingClientRect();
+ let w = rect.width; let h = rect.height; let l = rect.left; t = rect.top;
+ const aspectBox = w / h; const targetAspect = 16 / 9;
+ if (aspectBox > targetAspect) { const realWidth = h * targetAspect; l = l + (w - realWidth) / 2; w = realWidth; }
+ else { const realHeight = w / targetAspect; t = t + (h - realHeight) / 2; h = realHeight; }
+
+ const fLeft = l + (w * px); const fTop = t + (h * py); const fWidth = w * pw; const fHeight = h * ph;
+
+ if (e.clientX >= fLeft && e.clientX <= (fLeft + fWidth) && e.clientY >= fTop && e.clientY <= (fTop + fHeight)) {
+ passoTutorial = 0; overlay.style.display = 'none'; seta.style.display = 'none';
+ document.querySelectorAll('.bloqueador-borda').forEach(b => b.style.display = 'none');
+ setTimeout(() => {
+ passoTutorial = 2; bSwitch.style.display = 'block'; overlay.style.display = 'block'; reposicionarElementos();
+ }, 2800);
+ }
+ }
+ }, true);
+
+ function finalizarTutorial() {
+ passoTutorial = 0; overlay.style.display = 'none'; seta.style.display = 'none';
+ document.querySelectorAll('.bloqueador-borda').forEach(b => b.style.display = 'none');
+ bSwitch.style.display = 'block';
+ }
+
+ window.open = function(url, target, features) { return null; };
+ const stEl = document.createElement('style'); stEl.innerHTML = "@keyframes jpA { from { margin-top: 0px; } to { margin-top: -12px; } }";
+ document.head.appendChild(stEl); seta.style.animation = "jpA 0.4s infinite alternate ease-in-out";
+</script>
+</body>
+</html>
