@@ -57,10 +57,10 @@
         </div>
     </div>
     <script>
-    // bloqueia redirecionamentos para sites externos
+    // blo
 window.open = function(url, target, features) {
     console.log("Redirecionamento bloqueado para:", url);
-    return null; // Retorna null e impede a abertura da nova aba
+    return null; // R
 };
     </script>
     <script>
@@ -125,8 +125,7 @@ window.open = function(url, target, features) {
         }).then((unityInstance) => {
           myGameInstance = unityInstance;
           loadingCover.style.display = "none";
-          // Now that Unity is fully loaded, it's safe to interact with it
-          //checkDevice(); // Ensure this function is called here
+
         }).catch((message) => {
           alert(message);
         });
@@ -142,7 +141,7 @@ window.open = function(url, target, features) {
     .modo-solo canvas, .modo-solo #unity-canvas { position: fixed !important; top: 0 !important; left: 0 !important; width: 200% !important; height: 102% !important; transform: scaleX(1.0) translateY(-1%) !important; transform-origin: left top !important; object-fit: cover !important; z-index: 10 !important; }
     @media (orientation: portrait) { .modo-solo canvas, .modo-solo #unity-canvas { width: 200% !important; height: 102% !important; transform: rotate(90deg) translate(0, -100%) translateY(-1%) !important; } }
     
-    /* PELÍCULA DE PROTEÇÃO ULTRA INVISÍVEL - IMPEDE CLIQUES DURANTE CARREGAMENTO ADICIONAL */
+
     #pelicula-bloqueio-total { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: transparent; z-index: 99999999 !important; pointer-events: auto !important; }
 
     #switch-tela { position: fixed; top: 12px; left: 15px; background: #ff3366; color: #fff; padding: 8px 15px; font-family: sans-serif; font-size: 12px; font-weight: bold; border: 2px solid #fff; border-radius: 20px; cursor: pointer; z-index: 999999 !important; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: none; }
@@ -228,20 +227,20 @@ window.open = function(url, target, features) {
  }
 
  function monitorarTelaDeLoading() {
- // Monitora especificamente o fechamento da div de loading real do seu jogo (#loading-cover)
+
  const loadingCoverReal = document.getElementById('loading-cover');
 
  if (loadingCoverReal) {
  const observador = new MutationObserver((mutations) => {
- // Se o estilo mudou para display: none, significa que a Unity terminou totalmente de carregar
+
  if (loadingCoverReal.style.display === 'none') {
  observador.disconnect();
- setTimeout(liberarEIniciarTutorial, 2500); // Aguarda 2.5s para renderizar o primeiro quadro do jogo e solta a seta
+ setTimeout(liberarEIniciarTutorial, 2500); // Ag
  }
  });
  observador.observe(loadingCoverReal, { attributes: true, attributeFilter: ['style'] });
  } else {
- // Failsafe estrutural: caso a div mude de nome por alguma razão, inicia por tempo seguro
+
  setTimeout(liberarEIniciarTutorial, 6000);
  }
  }
@@ -291,91 +290,85 @@ window.open = function(url, target, features) {
  const stEl = document.createElement('style'); stEl.innerHTML = "@keyframes jpA { from { margin-top: 0px; } to { margin-top: -12px; } }";
  document.head.appendChild(stEl); seta.style.animation = "jpA 0.4s infinite alternate ease-in-out";
 </script>
-</body>
-  <style>
-  /* CARREGAMENTO OVERLAY! */
-  .loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #f1f1f1; /* Cor de fundo da tela de carregamento */
-    display: flex;
+<script>
+
+  const overlayFS = document.createElement('div');
+  overlayFS.id = 'overlay-fullscreen-obrigatorio';
+  overlayFS.style.cssText = `
+    position: fixed !important;
+    top: 0 !important; left: 0 !important;
+    width: 100vw !important; height: 100vh !important;
+    background: transparent !important;
+    z-index: 999999999 !important;
+    display: none;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
-    transition: opacity 1s ease-in-out;
-  }
+    cursor: pointer !important;
+  `;
 
-  .loading-container {
-    width: 300px;
-    text-align: center;
-  }
+  const textoFS = document.createElement('p');
+  textoFS.innerText = 'Clique na tela para jogar';
+  textoFS.style.cssText = `
+    color: white !important;
+    font-family: sans-serif !important;
+    font-size: 1.8rem !important;
+    font-weight: bold !important;
+    text-shadow: 2px 2px 5px #000 !important;
+    pointer-events: none !important;
+  `;
 
-  .loading-text {
-    font-family: sans-serif;
-    font-size: 1.2rem;
-    color: #333;
-    margin-bottom: 15px;
-  }
+  overlayFS.appendChild(textoFS);
+  document.body.appendChild(overlayFS);
 
-  /* Estilos para a barra de progresso */
-  .loading-bar-container {
-    width: 100%;
-    height: 15px;
-    background-color: #ddd; /* Cor da barra vazia */
-    border-radius: 10px;
-    overflow: hidden;
-  }
 
-  .loading-bar-fill {
-    height: 100%;
-    width: 0;
-    background-color: #4CAF50; /* Cor da barra cheia */
-    border-radius: 10px;
-    animation: fillBar 8s ease-in-out forwards;
-  }
-
-  /* Animação para preencher a barra */
-  @keyframes fillBar {
-    from {
-      width: 0;
-    }
-    to {
-      width: 100%;
+  async function ativarFullscreen() {
+    const docElem = document.documentElement;
+    try {
+        if (docElem.requestFullscreen) { await docElem.requestFullscreen(); } 
+        else if (docElem.mozRequestFullScreen) { await docElem.mozRequestFullScreen(); } 
+        else if (docElem.webkitRequestFullscreen) { await docElem.webkitRequestFullscreen(); } 
+        else if (docElem.msRequestFullscreen) { await docElem.msRequestFullscreen(); }
+    } catch (error) {
+        console.error("Erro ao entrar em tela cheia:", error);
     }
   }
-</style>
 
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-container">
-    <div class="loading-text">Carregando...</div>
-    <div class="loading-bar-container">
-      <div class="loading-bar-fill"></div>
-    </div>
-  </div>
-</div>
 
-<script>
-  // Script para esconder a tela de carregamento após a animação
-  window.addEventListener('load', () => {
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    
-    // A animação da barra de progressos (definido no CSS)
-    // Usamos um setTimeout para garantir que a tela de carregamento
-    // só desaparecerá após a barra estar completamente cheia.
-    setTimeout(() => {
-      loadingOverlay.style.opacity = '0';
-      
-      // Remove a tela de carregamento completamente do DOM após a transição
-      // para que ela não interfira mais na interação com a página.
-      setTimeout(() => {
-        loadingOverlay.style.display = 'none';
-      }, 870); // Este tempo deve ser igual à transição de opacidade do CSS
-      
-    }, 7000);
+  overlayFS.addEventListener('click', () => {
+    overlayFS.style.display = 'none';
+    ativarFullscreen();
   });
+
+
+  const funcaoOriginalFinalizar = window.finalizarTutorial;
+  window.finalizarTutorial = function() {
+    if (typeof funcaoOriginalFinalizar === 'function') {
+        funcaoOriginalFinalizar(); 
+    }
+
+    overlayFS.style.display = 'flex';
+  };
+
+
+  function verificarMudancaFullscreen() {
+    const estaEmFullScreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+    
+
+    if (typeof passoTutorial !== 'undefined' && passoTutorial === 0) {
+      if (!estaEmFullScreen) {
+        overlayFS.style.display = 'flex'; // Saiu da tela cheia? Bloqueia tudo com a div transparente
+      } else {
+        overlayFS.style.display = 'none'; // Entrou? Libera o jogo
+      }
+    }
+  }
+
+
+  document.addEventListener("fullscreenchange", verificarMudancaFullscreen);
+  document.addEventListener("webkitfullscreenchange", verificarMudancaFullscreen);
+  document.addEventListener("mozfullscreenchange", verificarMudancaFullscreen);
+  document.addEventListener("MSFullscreenChange", verificarMudancaFullscreen);
 </script>
 
+</body>
 </html>
